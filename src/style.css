@@ -1,3 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=PT+Root+UI:wght@400;500;700&display=swap');
+
 body {
   background-color: #fff;
+  font-family: "PT Root UI", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  max-width: 1444px;
+  margin: 0 auto;
+  padding: 20px;
 }
