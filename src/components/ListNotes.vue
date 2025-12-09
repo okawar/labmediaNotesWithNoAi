@@ -10,6 +10,21 @@
         created_at: string;
     }
 
+    const openedMenuNoteId = ref<number | null>(null);
+
+    function handleToggleMenu(noteNumber: number) {
+        if (openedMenuNoteId.value === noteNumber) {
+            openedMenuNoteId.value = null;
+        } else {
+            openedMenuNoteId.value = noteNumber;
+        }
+    }
+
+    function handleChangeView(newMode: 'grid' | 'list') {
+        viewMode.value = newMode;
+        openedMenuNoteId.value = null;
+    }
+
     defineProps<{
         notes: Note[];
     }>();
@@ -18,15 +33,15 @@
 </script>
 <template>
     <div class="viewModes">
-        <button @click="viewMode = 'grid'" :class="{'viewMode-active': viewMode === 'grid'}">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+        <button @click="handleChangeView('grid')" :class="{'viewMode-active': viewMode === 'grid'}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#fff">
                 <rect x="3" y="3" width="7" height="7"></rect>
                 <rect x="14" y="3" width="7" height="7"></rect>
                 <rect x="3" y="14" width="7" height="7"></rect>
                 <rect x="14" y="14" width="7" height="7"></rect>
             </svg>
         </button>
-        <button @click="viewMode = 'list'" :class="{ 'viewMode-active': viewMode === 'list' }">
+        <button @click="handleChangeView('list')" :class="{ 'viewMode-active': viewMode === 'list' }">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                 <rect x="4" y="5" width="16" height="2"></rect>
                 <rect x="4" y="11" width="16" height="2"></rect>
@@ -35,7 +50,7 @@
         </button>
     </div>
     <main class="note-list" :class="`note-list__${viewMode}`">
-        <NoteCard v-for="note in notes" :key="note.number" :note="note" :viewMode="viewMode" />
+        <NoteCard :is-menu-open="openedMenuNoteId === note.number" @toggle-menu="handleToggleMenu(note.number)" v-for="note in notes" :key="note.number" :note="note" :viewMode="viewMode" />
     </main>
 </template>
 
@@ -68,14 +83,15 @@
     }
 
     .viewModes button {
-        padding: 10px 20px;
-        border: none;
+        width: 40px;
+        height: 40px;
+        border: 1px solid #B28FE390;
         color: #fff;
-        border-radius: 50px;
+        border-radius: 10px;
         font-size: 16px;
         cursor: pointer;
     }
     .viewMode-active{
-        background-color: #5A27AA;
+        background-color: #B28FE390;
     }
 </style>

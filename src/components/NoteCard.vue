@@ -13,9 +13,10 @@ interface Note {
 defineProps<{
     note: Note;
     viewMode: "grid" | "list";
+    isMenuOpen: boolean;
 }>();
 
-const openBtnState = ref(false);
+const emit = defineEmits(['toggle-menu'])
 </script>
 
 <template>
@@ -31,7 +32,7 @@ const openBtnState = ref(false);
                 </div>
 
             </span>
-            <button v-if="viewMode === 'grid'" v-show="!openBtnState" @click="openBtnState = true"
+            <button v-if="viewMode === 'grid'" v-show="!isMenuOpen" @click="emit('toggle-menu')"
                 style="background-color: transparent; border: 1px solid #B28FE390; border-radius: 5px; cursor: pointer;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                     <circle cx="12" cy="7" r="2"></circle>
@@ -39,9 +40,9 @@ const openBtnState = ref(false);
                     <circle cx="12" cy="21" r="2"></circle>
                 </svg>
             </button>
-            <div v-show="openBtnState" class="note-actions">
-                <button @click="openBtnState = false">
-                    <svg style="border-bottom: 1px solid #B28FE390;" xmlns="http://www.w3.org/2000/svg" width="24"
+            <div v-show="isMenuOpen" class="note-actions">
+                <button @click="emit('toggle-menu')">
+                    <svg style="border-bottom: 1px solid #B28FE390; margin-bottom: 10px;" xmlns="http://www.w3.org/2000/svg" width="24"
                         height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
