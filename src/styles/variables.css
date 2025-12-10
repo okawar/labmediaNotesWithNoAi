@@ -1,0 +1,37 @@
+:root {
+  --color-icon-default: currentColor;
+  --color-black: #000000;
+  --color-white: #FFFFFF;
+  --color-brand: #7733DD90;
+  --color-brand-add: #BA9AE6;
+  --color-brand-light-90: #B28FE390;
+  --color-stroke-dark-80: #B28FE380;
+  --color-stroke-light-30: #E1D9E830;
+  --color-bg: #F8F9FB;
+  --color-bg-card: #E1D9E8;
+
+  --spacing-xs: 5px;
+  --spacing-s: 10px;
+  --spacing-m: 20px;
+  --spacing-l: 40px;
+
+  --border-radius-s: 8px;
+  --border-radius-m: 16px;
+  --border-radius-l: 50px; 
+  --border-image: 4px;
+
+  /* --card-header-min-height: 150px;
+  --card-image-height: 200px; */
+
+  --heading-1: 34px;
+  --fw-h-1: 700;
+  --heading-2: 28px;
+  --fw-h-2: 700;
+  --heading-3: 22px;
+  --fw-h-3: 700;
+
+  --body-1: 28px;
+  --body-2: 22px;
+  --body-3: 22px;
+  --body-4: 18px;
+}
