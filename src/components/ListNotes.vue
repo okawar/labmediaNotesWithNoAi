@@ -22,7 +22,7 @@ defineProps<{
     notes: Note[];
 }>();
 
-const emit = defineEmits(['openDeleteModal']);
+const emit = defineEmits(['openDeleteModal', 'openEditModal']);
 
 const viewMode = ref<"grid" | "list">("grid");
 </script>
@@ -99,6 +99,7 @@ const viewMode = ref<"grid" | "list">("grid");
     </div>
     <main class="note-list" :class="`note-list__${viewMode}`">
         <NoteCard @openDeleteModal="$emit('openDeleteModal', note.number)"
+            @openEditModal="$emit('openEditModal', note)"
             :is-menu-open="openedMenuNoteId === note.number" @toggle-menu="handleToggleMenu(note.number)"
             v-for="note in notes" :key="note.number" :note="note" :viewMode="viewMode" />
     </main>

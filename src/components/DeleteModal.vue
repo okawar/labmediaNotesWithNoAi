@@ -4,7 +4,7 @@
         noteToDelete: number | null;
     }>();
 
-    const emit = defineEmits(['closeDeleteModal', 'handleDeleteNote']);
+    const emit = defineEmits(['closeDeleteModal', 'deleteNote']);
 </script>
 
 <template>
@@ -23,7 +23,7 @@
             <p>Удаленная заметка попадет в архив без возможности восстановления</p>
             <div class="modal-actions">
                 <button class="btn-cancel" @click="emit('closeDeleteModal')">Отменить</button>
-                <button class="btn-delete" @click="emit('handleDeleteNote', noteToDelete)">Удалить</button>
+                <button class="btn-delete" @click="emit('deleteNote', noteToDelete)">Удалить</button>
             </div>
         </div>
     </div>   

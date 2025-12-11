@@ -1,12 +1,6 @@
 <script setup lang="ts">
-
-interface Note {
-    number: number;
-    title: string;
-    content?: string;
-    imgSrc?: string;
-    created_at: string;
-}
+import type { Note } from '../types/notes';
+import { ref } from 'vue';
 
 defineProps<{
     note: Note;
@@ -14,7 +8,8 @@ defineProps<{
     isMenuOpen: boolean;
 }>();
 
-const emit = defineEmits(['toggle-menu', 'openDeleteModal']);
+const emit = defineEmits(['toggle-menu', 'openDeleteModal', 'openEditModal']);
+
 </script>
 
 <template>
@@ -61,7 +56,7 @@ const emit = defineEmits(['toggle-menu', 'openDeleteModal']);
                     </svg>
                 </button>
                 <div class="note-actions__group">
-                    <button @click="isMenuOpen = true">
+                    <button @click="emit('openEditModal', note)">
                         <!-- Иконка редактирования -->
                         <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path

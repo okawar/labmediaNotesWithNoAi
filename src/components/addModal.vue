@@ -14,6 +14,7 @@ const clearForm = () => {
     title.value = '';
     content.value = '';
 };
+
 </script>
 
 <template>

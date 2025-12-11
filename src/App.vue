@@ -5,6 +5,8 @@ import ListNotes from './components/ListNotes.vue';
 import Footer from './components/Footer.vue';
 import DeleteModal from './components/DeleteModal.vue';
 import AddModal from './components/addModal.vue';
+import EditModal from './components/EditModal.vue';
+
 
 import type { Note } from './types/notes';
 
@@ -54,6 +56,8 @@ const notes = ref<Note[]>([
 
 const modalDeleteVisible = ref(false);
 const modalAddVisible = ref(false);
+const modalEditVisible = ref(false);
+
 
 function handleClickDelete(noteNumber: number) {
 	noteToDelete.value = noteNumber;
@@ -71,6 +75,16 @@ function handleOpenAddModal() {
 function handleCloseAddModal() {
 	modalAddVisible.value = false;
 }
+
+function handleOpenEditModal(note: Note) {
+	noteToEdit.value = note;
+	modalEditVisible.value = true;
+}
+
+function handleCloseEditModal() {
+	modalEditVisible.value = false;
+}
+
 
 const countNotes = computed(() => notes.value.length);
 
@@ -101,12 +115,24 @@ function handleDeleteNote(noteNumber: number) {
 	notes.value = notes.value.filter(note => note.number !== noteNumber);
 	handleCloseModal();
 }
+
+const noteToEdit = ref<Note | null>(null);
+
+function handleEditNote(noteNumber: number, updatedData: { title?: string; content?: string;}) {
+	const newNotes = notes.value.map(note => {
+		if (note.number === noteNumber) {
+			return { ...note, ...updatedData };
+		}
+		return note;
+	});
+	notes.value = newNotes;
+}
 </script>
 
 <template>
 	<div class="container">
 		<Header />
-		<ListNotes @openDeleteModal="handleClickDelete" :notes="notes" />
+		<ListNotes @openDeleteModal="handleClickDelete" :notes="notes" @openEditModal="handleOpenEditModal" />
 		<Footer :count="countNotes"/>
 		<div class="add-note">
 			<button class="add-note__btn" @click="handleOpenAddModal">
@@ -143,8 +169,9 @@ function handleDeleteNote(noteNumber: number) {
 
 			</button>
 		</div>
-		<DeleteModal :modalDeleteVisible="modalDeleteVisible" @closeDeleteModal="handleCloseModal" @handleDeleteNote="handleDeleteNote" :noteToDelete="noteToDelete"/>
+		<DeleteModal :modalDeleteVisible="modalDeleteVisible" @closeDeleteModal="handleCloseModal" @deleteNote="handleDeleteNote" :noteToDelete="noteToDelete"/>
 		<AddModal :modalAddVisible="modalAddVisible" @closeAddModal="handleCloseAddModal" @addNote="handleAddNote"/>
+		<EditModal v-if="noteToEdit" :modalEditVisible="modalEditVisible" @closeEditModal="handleCloseEditModal" @editNote="handleEditNote" :note="noteToEdit" />
 	</div>
 </template>
 
