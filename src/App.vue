@@ -4,8 +4,11 @@ import Header from './components/Header.vue';
 import ListNotes from './components/ListNotes.vue';
 import Footer from './components/Footer.vue';
 import DeleteModal from './components/DeleteModal.vue';
+import AddModal from './components/addModal.vue';
 
-const notes = ref([
+import type { Note } from './types/notes';
+
+const notes = ref<Note[]>([
 	{
 		number: 1,
 		title: 'Обязательный заголовок',
@@ -50,8 +53,10 @@ const notes = ref([
 ]);
 
 const modalDeleteVisible = ref(false);
+const modalAddVisible = ref(false);
 
-function handleClickDelete() {
+function handleClickDelete(noteNumber: number) {
+	noteToDelete.value = noteNumber;
 	modalDeleteVisible.value = true;
 }
 
@@ -59,7 +64,43 @@ function handleCloseModal() {
 	modalDeleteVisible.value = false;
 }
 
+function handleOpenAddModal() {
+	modalAddVisible.value = true;
+}
+
+function handleCloseAddModal() {
+	modalAddVisible.value = false;
+}
+
 const countNotes = computed(() => notes.value.length);
+
+function handleAddNote(newNote: { 
+	title: string; 
+	content?: string; 
+	imgSrc?: string;
+}) {
+
+	if (newNote.title.trim() === '') {
+		alert('Заголовок не может быть пустым!');
+		return;
+	}
+	const newNoteObj = {
+		...newNote,
+		number: notes.value.length + 1,
+		created_at: new Date().toLocaleDateString(),
+	};
+
+	notes.value = [...notes.value, newNoteObj ];
+
+	handleCloseAddModal();
+}
+
+const noteToDelete = ref<number | null>(null);
+
+function handleDeleteNote(noteNumber: number) {
+	notes.value = notes.value.filter(note => note.number !== noteNumber);
+	handleCloseModal();
+}
 </script>
 
 <template>
@@ -68,7 +109,7 @@ const countNotes = computed(() => notes.value.length);
 		<ListNotes @openDeleteModal="handleClickDelete" :notes="notes" />
 		<Footer :count="countNotes"/>
 		<div class="add-note">
-			<button class="add-note__btn">
+			<button class="add-note__btn" @click="handleOpenAddModal">
 				<svg width="102" height="102" viewBox="0 0 102 102" fill="none" xmlns="http://www.w3.org/2000/svg">
 					<g filter="url(#filter0_dd_23_829)">
 						<path
@@ -102,7 +143,8 @@ const countNotes = computed(() => notes.value.length);
 
 			</button>
 		</div>
-		<DeleteModal :modalDeleteVisible="modalDeleteVisible" @closeDeleteModal="handleCloseModal"/>
+		<DeleteModal :modalDeleteVisible="modalDeleteVisible" @closeDeleteModal="handleCloseModal" @handleDeleteNote="handleDeleteNote" :noteToDelete="noteToDelete"/>
+		<AddModal :modalAddVisible="modalAddVisible" @closeAddModal="handleCloseAddModal" @addNote="handleAddNote"/>
 	</div>
 </template>
 

@@ -69,7 +69,7 @@ const emit = defineEmits(['toggle-menu', 'openDeleteModal']);
                                 stroke="#1B1B1B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                     </button>
-                    <button @click="$emit('openDeleteModal')">
+                    <button @click="$emit('openDeleteModal', note.number)">
                         <!-- Иконка удаления -->
                         <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path

@@ -1,9 +1,10 @@
 <script setup lang="ts">
     defineProps<{
         modalDeleteVisible: boolean;
+        noteToDelete: number | null;
     }>();
 
-    const emit = defineEmits(['closeDeleteModal']);
+    const emit = defineEmits(['closeDeleteModal', 'handleDeleteNote']);
 </script>
 
 <template>
@@ -17,14 +18,12 @@
                         stroke="#7733DD" stroke-opacity="0.9" stroke-width="3.83333" stroke-linecap="round"
                         stroke-linejoin="round" />
                 </svg>
-
-
             </span>
             <h1>Удалить заметку</h1>
             <p>Удаленная заметка попадет в архив без возможности восстановления</p>
             <div class="modal-actions">
                 <button class="btn-cancel" @click="emit('closeDeleteModal')">Отменить</button>
-                <button class="btn-delete">Удалить</button>
+                <button class="btn-delete" @click="emit('handleDeleteNote', noteToDelete)">Удалить</button>
             </div>
         </div>
     </div>   

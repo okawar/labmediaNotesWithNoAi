@@ -1,42 +1,35 @@
 <script setup lang="ts">
-    import { ref } from 'vue';
-    import NoteCard from './NoteCard.vue';
+import { ref } from 'vue';
+import NoteCard from './NoteCard.vue';
+import type { Note } from '../types/notes';
 
-    interface Note {
-        number: number;
-        title: string;
-        content?: string;
-        imgSrc?: string;
-        created_at: string;
-    }
+const openedMenuNoteId = ref<number | null>(null);
 
-    const openedMenuNoteId = ref<number | null>(null);
-
-    function handleToggleMenu(noteNumber: number) {
-        if (openedMenuNoteId.value === noteNumber) {
-            openedMenuNoteId.value = null;
-        } else {
-            openedMenuNoteId.value = noteNumber;
-        }
-    }
-
-    function handleChangeView(newMode: 'grid' | 'list') {
-        viewMode.value = newMode;
+function handleToggleMenu(noteNumber: number) {
+    if (openedMenuNoteId.value === noteNumber) {
         openedMenuNoteId.value = null;
+    } else {
+        openedMenuNoteId.value = noteNumber;
     }
+}
 
-    defineProps<{
-        notes: Note[];
-    }>();
+function handleChangeView(newMode: 'grid' | 'list') {
+    viewMode.value = newMode;
+    openedMenuNoteId.value = null;
+}
 
-    const emit = defineEmits(['openDeleteModal']);
+defineProps<{
+    notes: Note[];
+}>();
 
-    const viewMode = ref<"grid" | "list">("grid");
+const emit = defineEmits(['openDeleteModal']);
+
+const viewMode = ref<"grid" | "list">("grid");
 </script>
 <template>
     <div class="viewModes">
         <button @click="handleChangeView('grid')">
-            <div v-if="viewMode==='grid'">
+            <div v-if="viewMode === 'grid'">
                 <!-- Иконка активной плитки -->
                 <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect width="40" height="40" rx="9.41177" fill="#B28FE3" fill-opacity="0.9" />
@@ -105,41 +98,43 @@
         </button>
     </div>
     <main class="note-list" :class="`note-list__${viewMode}`">
-        <NoteCard @openDeleteModal="$emit('openDeleteModal')" :is-menu-open="openedMenuNoteId === note.number" @toggle-menu="handleToggleMenu(note.number)" v-for="note in notes" :key="note.number" :note="note" :viewMode="viewMode" />
+        <NoteCard @openDeleteModal="$emit('openDeleteModal', note.number)"
+            :is-menu-open="openedMenuNoteId === note.number" @toggle-menu="handleToggleMenu(note.number)"
+            v-for="note in notes" :key="note.number" :note="note" :viewMode="viewMode" />
     </main>
 </template>
 
 <style scoped>
-    .note-list {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(468px, 1fr));
-        gap: 20px;
-        margin-top: 40px;
-    }
+.note-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(468px, 1fr));
+    gap: 20px;
+    margin-top: 40px;
+}
 
-    .note-list__grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(468px, 1fr));
-        gap: 20px;
-        margin-top: 40px;
-    }
+.note-list__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(468px, 1fr));
+    gap: 20px;
+    margin-top: 40px;
+}
 
-    .note-list__list {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        margin-top: 40px;   
-    }
+.note-list__list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 40px;
+}
 
-    .viewModes {
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-    }
+.viewModes {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
 
-    .viewModes button {
-        border: none;
-        cursor: pointer;
-        background-color: transparent;
-    }
+.viewModes button {
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+}
 </style>
