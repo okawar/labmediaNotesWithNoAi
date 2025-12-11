@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { Note } from '../types/notes';
-import { ref } from 'vue';
 
 defineProps<{
     note: Note;
@@ -77,7 +76,7 @@ const emit = defineEmits(['toggle-menu', 'openDeleteModal', 'openEditModal']);
             </div>
 
             <div v-if="viewMode==='list'" class="note-actions note-actions--list">
-                <button>
+                <button @click="$emit('openEditModal', note)">
                     <!-- Иконка редактирования -->
                     <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -85,7 +84,7 @@ const emit = defineEmits(['toggle-menu', 'openDeleteModal', 'openEditModal']);
                             stroke="#1B1B1B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                 </button>
-                <button @click="$emit('openDeleteModal')">
+                <button @click="$emit('openDeleteModal', note.number)">
                     <!-- Иконка удаления -->
                     <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path

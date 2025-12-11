@@ -4,7 +4,7 @@ import Header from './components/Header.vue';
 import ListNotes from './components/ListNotes.vue';
 import Footer from './components/Footer.vue';
 import DeleteModal from './components/DeleteModal.vue';
-import AddModal from './components/addModal.vue';
+import AddModal from './components/AddModal.vue';
 import EditModal from './components/EditModal.vue';
 
 
@@ -24,7 +24,7 @@ const notes = ref<Note[]>([
 		content: 'Еще один пример заметки с использованием Composition API в Vue.js. Этот подход позволяет лучше структурировать код и повторно использовать логику между компонентами.',
 		imgSrc: 'https://fastly.picsum.photos/id/1060/70/70.jpg?hmac=ERAlIoEotrmvKFrS0mxV49-ku45vMSnvqTWKJV-TwYo',
 		created_at: '15.07.2021',
-	},	
+	},
 	{
 		number: 3,
 		title: 'Идеи для нового проекта',
@@ -50,6 +50,24 @@ const notes = ref<Note[]>([
 		content: 'Спагетти, гуанчале (или бекон), яичные желтки, сыр Пекорино Романо, черный перец. Главное – не добавлять сливки!',
 		imgSrc: 'https://fastly.picsum.photos/id/1080/70/70.jpg?hmac=nSGrGf_Gc-wdg_20a3sAnN0Z9iTBp2yrj2_iL-d2EL4',
 		created_at: '08.08.2022',
+	},
+	{
+		number: 7,
+		title: 'Изучение нового фреймворка',
+		content: 'Начать изучение Vue 3 с Composition API. Пройти официальную документацию и сделать пару тестовых проектов.',
+		created_at: '12.01.2024',
+	},
+	{
+		number: 8,
+		title: 'План тренировок',
+		content: 'Понедельник - грудь, трицепс. Среда - спина, бицепс. Пятница - ноги, плечи. Не забывать про кардио.',
+		created_at: '18.03.2024',
+	},
+	{
+		number: 9,
+		title: 'Книги к прочтению',
+		content: '"Чистый код" - Роберт Мартин, "Паттерны проектирования" - Эрих Гамма и др.',
+		created_at: '05.04.2024',
 	}
 
 ]);
@@ -57,7 +75,17 @@ const notes = ref<Note[]>([
 const modalDeleteVisible = ref(false);
 const modalAddVisible = ref(false);
 const modalEditVisible = ref(false);
+const countNotes = computed(() => notes.value.length);
+const noteToDelete = ref<number | null>(null);
+const noteToEdit = ref<Note | null>(null);
+const visibleNotesCount = ref(6);
+const displayedNotes = computed(() => {
+	return notes.value.slice(0, visibleNotesCount.value);
+})
 
+function loadMoreNotes() {
+	visibleNotesCount.value += 6;
+}
 
 function handleClickDelete(noteNumber: number) {
 	noteToDelete.value = noteNumber;
@@ -85,12 +113,9 @@ function handleCloseEditModal() {
 	modalEditVisible.value = false;
 }
 
-
-const countNotes = computed(() => notes.value.length);
-
-function handleAddNote(newNote: { 
-	title: string; 
-	content?: string; 
+function handleAddNote(newNote: {
+	title: string;
+	content?: string;
 	imgSrc?: string;
 }) {
 
@@ -104,21 +129,17 @@ function handleAddNote(newNote: {
 		created_at: new Date().toLocaleDateString(),
 	};
 
-	notes.value = [...notes.value, newNoteObj ];
+	notes.value = [...notes.value, newNoteObj];
 
 	handleCloseAddModal();
 }
-
-const noteToDelete = ref<number | null>(null);
 
 function handleDeleteNote(noteNumber: number) {
 	notes.value = notes.value.filter(note => note.number !== noteNumber);
 	handleCloseModal();
 }
 
-const noteToEdit = ref<Note | null>(null);
-
-function handleEditNote(noteNumber: number, updatedData: { title?: string; content?: string;}) {
+function handleEditNote(noteNumber: number, updatedData: { title?: string; content?: string; }) {
 	const newNotes = notes.value.map(note => {
 		if (note.number === noteNumber) {
 			return { ...note, ...updatedData };
@@ -132,8 +153,14 @@ function handleEditNote(noteNumber: number, updatedData: { title?: string; conte
 <template>
 	<div class="container">
 		<Header />
-		<ListNotes @openDeleteModal="handleClickDelete" :notes="notes" @openEditModal="handleOpenEditModal" />
-		<Footer :count="countNotes"/>
+		<ListNotes @openDeleteModal="handleClickDelete" :notes="displayedNotes" @openEditModal="handleOpenEditModal"/>
+		<div class="load-more-container">
+			<button v-if="visibleNotesCount < notes.length" class="load-more-btn" @click="loadMoreNotes">
+				Загрузить еще
+			</button>
+		</div>
+		
+		<Footer :count="countNotes" />
 		<div class="add-note">
 			<button class="add-note__btn" @click="handleOpenAddModal">
 				<svg width="102" height="102" viewBox="0 0 102 102" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -169,23 +196,42 @@ function handleEditNote(noteNumber: number, updatedData: { title?: string; conte
 
 			</button>
 		</div>
-		<DeleteModal :modalDeleteVisible="modalDeleteVisible" @closeDeleteModal="handleCloseModal" @deleteNote="handleDeleteNote" :noteToDelete="noteToDelete"/>
-		<AddModal :modalAddVisible="modalAddVisible" @closeAddModal="handleCloseAddModal" @addNote="handleAddNote"/>
-		<EditModal v-if="noteToEdit" :modalEditVisible="modalEditVisible" @closeEditModal="handleCloseEditModal" @editNote="handleEditNote" :note="noteToEdit" />
+		<DeleteModal :modalDeleteVisible="modalDeleteVisible" @closeDeleteModal="handleCloseModal"
+			@deleteNote="handleDeleteNote" :noteToDelete="noteToDelete" />
+		<AddModal :modalAddVisible="modalAddVisible" @closeAddModal="handleCloseAddModal" @addNote="handleAddNote" />
+		<EditModal v-if="noteToEdit" :modalEditVisible="modalEditVisible" @closeEditModal="handleCloseEditModal"
+			@editNote="handleEditNote" :note="noteToEdit" />
 	</div>
 </template>
 
 <style scoped>
-	.add-note {
-		position: fixed;
-		bottom: 30px;
-		right: 30px;
-	}
+.load-more-container {
+	display: flex;
+	justify-content: flex-start;
+}
 
-	.add-note__btn {
-		background: none;
-		border: none;
-		padding: 0;
-		cursor: pointer;
-	}
+.load-more-btn {
+	margin-top: var(--spacing-m);
+	padding: 12px 24px;
+	font-size: 16px;
+	font-weight: bold;
+	color: white;
+	background-color: var(--color-brand);
+	border: none;
+	border-radius: 8px;
+	cursor: pointer;
+}
+
+.add-note {
+	position: fixed;
+	bottom: 30px;
+	right: 30px;
+}
+
+.add-note__btn {
+	background: none;
+	border: none;
+	padding: 0;
+	cursor: pointer;
+}
 </style>
