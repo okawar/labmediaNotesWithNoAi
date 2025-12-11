@@ -79,9 +79,27 @@ const countNotes = computed(() => notes.value.length);
 const noteToDelete = ref<number | null>(null);
 const noteToEdit = ref<Note | null>(null);
 const visibleNotesCount = ref(6);
+
+const searchQuery = ref('');
+function handleSearch(query: string) {
+	searchQuery.value = query;
+}
+
+const filteredNotes = computed(() => {
+	const query = searchQuery.value.toLowerCase();
+	if (query === '') {
+		return notes.value;
+	}
+	return notes.value.filter(note =>
+		note.title.toLowerCase().includes(query) ||
+		(note.content && note.content.toLowerCase().includes(query))
+	);
+});
+
 const displayedNotes = computed(() => {
-	return notes.value.slice(0, visibleNotesCount.value);
+	return filteredNotes.value.slice(0, visibleNotesCount.value);
 })
+
 
 function loadMoreNotes() {
 	visibleNotesCount.value += 6;
@@ -152,10 +170,10 @@ function handleEditNote(noteNumber: number, updatedData: { title?: string; conte
 
 <template>
 	<div class="container">
-		<Header />
+		<Header @search="handleSearch"/>
 		<ListNotes @openDeleteModal="handleClickDelete" :notes="displayedNotes" @openEditModal="handleOpenEditModal"/>
 		<div class="load-more-container">
-			<button v-if="visibleNotesCount < notes.length" class="load-more-btn" @click="loadMoreNotes">
+			<button v-if="visibleNotesCount < notes.length || searchQuery.trim() === ''" class="load-more-btn" @click="loadMoreNotes">
 				Загрузить еще
 			</button>
 		</div>

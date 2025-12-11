@@ -1,5 +1,7 @@
 <script setup>
 
+    const emit = defineEmits(['search'])
+
 </script>
 <template>
     <header class="header">
@@ -14,7 +16,7 @@
 
             <label for="header-search"></label>
             <input class="header-search" type="text" id="header-search" name="header-search"
-                placeholder="Поиск" />
+                placeholder="Поиск" @input="$emit('search', $event.target.value)"/>
         </div>
         <button class="header-button">Архив</button>
     </header>
