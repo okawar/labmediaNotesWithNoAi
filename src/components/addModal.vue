@@ -70,7 +70,7 @@ const saveNote = () => {
                 <input v-model="title" type="text" required placeholder="Заголовок*" class="modal-input-title" />
                 <textarea v-model="content" placeholder="Текст заметки" class="modal-textarea-content"></textarea>
                 <input type="file" ref="fileInput" @change="handleFileChange" accept="image/*" style="display: none;" />
-                <template v-if="!imgSrc">
+                <div v-if="!imgSrc">
                     <button type="button" class="modal-btn-add-image" @click="triggerFileInput">
                         <!-- SVG иконка добавления -->
                         <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -80,12 +80,12 @@ const saveNote = () => {
                         </svg>
                         <span>Прикрепить изображение</span>
                     </button>
-                </template>
-                <template v-else>
+                </div>
+                <div v-else>
                     <button type="button" class="modal-btn-replace-image" @click="triggerFileInput">
                         Заменить изображение
                     </button>
-                </template>
+                </div>
 
                 <div v-if="imgSrc" class="image-preview">
                     <img :src="imgSrc" alt="Предпросмотр изображения" />
@@ -104,46 +104,46 @@ const saveNote = () => {
 </template>
 
 <style scoped>
-.image-preview {
-    position: relative;
-    margin-bottom: var(--spacing-l);
-    max-width: 200px;
-}
+    .image-preview {
+        position: relative;
+        margin-bottom: var(--spacing-l);
+        max-width: 200px;
+    }
 
-.image-preview img {
-    width: 100%;
-    border-radius: var(--border-radius-s);
-    border: 1px solid var(--color-bg-card);
-}
+    .image-preview img {
+        width: 100%;
+        border-radius: var(--border-radius-s);
+        border: 1px solid var(--color-bg-card);
+    }
 
-.image-preview__remove-btn {
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    width: 24px;
-    height: 24px;
-    background-color: #333;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 16px;
-    line-height: 24px;
-    text-align: center;
-}
+    .image-preview__remove-btn {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        width: 24px;
+        height: 24px;
+        background-color: #333;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 16px;
+        line-height: 24px;
+        text-align: center;
+    }
 
-.modal-btn-replace-image {
-    padding: var(--spacing-s);
-    margin-bottom: var(--spacing-l);
-    border: 1px solid var(--color-brand);
-    border-radius: var(--border-radius-l);
-    background-color: transparent;
-    color: var(--color-brand);
-    cursor: pointer;
-    width: 290px;
-    font-size: 16px;
-    font-weight: 500;
-}
+    .modal-btn-replace-image {
+        padding: var(--spacing-s);
+        margin-bottom: var(--spacing-l);
+        border: 1px solid var(--color-brand);
+        border-radius: var(--border-radius-l);
+        background-color: transparent;
+        color: var(--color-brand);
+        cursor: pointer;
+        width: 290px;
+        font-size: 16px;
+        font-weight: 500;
+    }
 
 
 .modal-backdrop {

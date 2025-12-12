@@ -121,10 +121,14 @@ const emit = defineEmits(['toggle-menu', 'openDeleteModal', 'openEditModal']);
     }
 
     .note-card__header {
-        border-bottom: 1px solid var(--color-card-border);
+        border-bottom: 1px solid var(--color-brand);
         display: flex;
         justify-content: space-between;
         margin-bottom: var(--spacing-m);
+
+        height: 130px;
+        overflow: hidden;
+        padding-bottom: 40px;
     }
 
     .note-card__title-group {
@@ -190,7 +194,7 @@ const emit = defineEmits(['toggle-menu', 'openDeleteModal', 'openEditModal']);
     }
 
     .note-card__image-wrapper--grid {
-        width: 30%;
+        width: fit-content;
         height: var(--card-image-height);
         margin-bottom: var(--spacing-m);
         border-radius: var(--border-image);
@@ -198,14 +202,14 @@ const emit = defineEmits(['toggle-menu', 'openDeleteModal', 'openEditModal']);
     }
     
     .note-card__image-wrapper--list {
-        width: 30%; 
-        height: fit-content;
+        width: fit-content; 
+        height: var(--card-image-height);
         overflow: hidden;
     }
 
     .note-card__image {
-        width: 100%;
-        height: 100%;
+        width: 180px;
+        height: 180px;
         object-fit: cover;
         display: block;
     }

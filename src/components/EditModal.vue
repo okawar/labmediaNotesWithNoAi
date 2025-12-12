@@ -11,18 +11,38 @@ const emit = defineEmits(['closeEditModal', 'editNote']);
 
 const editedTitle = ref('');
 const editedContent = ref('');
+const imgSrc = ref<string | null>(props.note.imgSrc || null);
+
+const fileInput = ref<HTMLInputElement | null>(null);
+
+function triggerFileInput() {
+    fileInput.value?.click();
+}
+
+function handleFileChange(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const file = target.files ? target.files[0] : null;
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            imgSrc.value = e.target?.result as string;
+        };
+        reader.readAsDataURL(file);
+    }
+}
 
 onMounted(() => {
     editedTitle.value = props.note.title;
     editedContent.value = props.note.content || '';
+    imgSrc.value = props.note.imgSrc || null;
 })
 
 function saveChanges() {
     emit(
-        'editNote', props.note.number, 
-        {title: editedTitle.value, content: editedContent.value}
-     );
-     emit('closeEditModal');
+        'editNote', props.note.number,
+        { title: editedTitle.value, content: editedContent.value, imgSrc: imgSrc.value || undefined }
+    );
+    emit('closeEditModal');
 }
 </script>
 
@@ -46,21 +66,33 @@ function saveChanges() {
             <form action="" class="modal-form">
                 <input v-model="editedTitle" type="text" required placeholder="Заголовок*" class="modal-input-title" />
                 <textarea v-model="editedContent" placeholder="Текст заметки" class="modal-textarea-content"></textarea>
-                <button type="button" class="modal-btn-edit-image">
-                    <!-- Иконка добавления изображения -->
-                    <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M21 10.5H27M24 7.5V13.5M26 17V24.5C26 25.0304 25.7893 25.5391 25.4142 25.9142C25.0391 26.2893 24.5304 26.5 24 26.5H10C9.46957 26.5 8.96086 26.2893 8.58579 25.9142C8.21071 25.5391 8 25.0304 8 24.5V10.5C8 9.96957 8.21071 9.46086 8.58579 9.08579C8.96086 8.71071 9.46957 8.5 10 8.5H17.5M26 20.5L22.914 17.414C22.5389 17.0391 22.0303 16.8284 21.5 16.8284C20.9697 16.8284 20.4611 17.0391 20.086 17.414L11 26.5M16 14.5C16 15.6046 15.1046 16.5 14 16.5C12.8954 16.5 12 15.6046 12 14.5C12 13.3954 12.8954 12.5 14 12.5C15.1046 12.5 16 13.3954 16 14.5Z"
-                            stroke="#1B1B1B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
+                <input type="file" ref="fileInput" @change="handleFileChange" accept="image/*" style="display: none;" />
+                <div v-if="!imgSrc">
+                    <button type="button" class="modal-btn-edit-image" @click="triggerFileInput">
+                        <!-- SVG иконка добавления -->
+                        <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M21 10.5H27M24 7.5V13.5M26 17V24.5C26 25.0304 25.7893 25.5391 25.4142 25.9142C25.0391 26.2893 24.5304 26.5 24 26.5H10C9.46957 26.5 8.96086 26.2893 8.58579 25.9142C8.21071 25.5391 8 25.0304 8 24.5V10.5C8 9.96957 8.21071 9.46086 8.58579 9.08579C8.96086 8.71071 9.46957 8.5 10 8.5H17.5M26 20.5L22.914 17.414C22.5389 17.0391 22.0303 16.8284 21.5 16.8284C20.9697 16.8284 20.4611 17.0391 20.086 17.414L11 26.5M16 14.5C16 15.6046 15.1046 16.5 14 16.5C12.8954 16.5 12 15.6046 12 14.5C12 13.3954 12.8954 12.5 14 12.5C15.1046 12.5 16 13.3954 16 14.5Z"
+                                stroke="#1B1B1B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <span>Прикрепить изображение</span>
+                    </button>
+                </div>
+                <div v-else>
+                    <button type="button" class="modal-btn-replace-image" @click="triggerFileInput">
+                        Заменить изображение
+                    </button>
+                </div>
 
-                    <span>Прикрепить изображение</span>
-                </button>
+                <div v-if="imgSrc" class="image-preview">
+                    <img :src="imgSrc" alt="Предпросмотр изображения" />
+                    <button type="button" @click="imgSrc = null" class="image-preview__remove-btn">
+                        &times;
+                    </button>
+                </div>
                 <div class="button-group">
-                    <button type="button" class="modal-btn-cancel"
-                        @click="emit('closeEditModal')">Отменить</button>
-                    <button type="submit" class="modal-btn-edit"
-                        @click.prevent="saveChanges()">Сохранить</button>
+                    <button type="button" class="modal-btn-cancel" @click="emit('closeEditModal')">Отменить</button>
+                    <button type="submit" class="modal-btn-edit" @click.prevent="saveChanges()">Сохранить</button>
                 </div>
             </form>
         </div>
@@ -68,6 +100,48 @@ function saveChanges() {
 </template>
 
 <style scoped>
+.image-preview {
+    position: relative;
+    margin-bottom: var(--spacing-l);
+    max-width: 200px;
+}
+
+.image-preview img {
+    width: 100%;
+    border-radius: var(--border-radius-s);
+    border: 1px solid var(--color-bg-card);
+}
+
+.image-preview__remove-btn {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 24px;
+    height: 24px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+}
+
+.modal-btn-replace-image {
+    padding: var(--spacing-s);
+    margin-bottom: var(--spacing-l);
+    border: 1px solid var(--color-brand);
+    border-radius: var(--border-radius-l);
+    background-color: transparent;
+    color: var(--color-brand);
+    cursor: pointer;
+    width: 290px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+
 .modal-backdrop {
     position: fixed;
     top: 0;

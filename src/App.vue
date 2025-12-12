@@ -157,7 +157,7 @@ function handleDeleteNote(noteNumber: number) {
 	handleCloseModal();
 }
 
-function handleEditNote(noteNumber: number, updatedData: { title?: string; content?: string; }) {
+function handleEditNote(noteNumber: number, updatedData: { title?: string; content?: string; imgSrc?: string }) {
 	const newNotes = notes.value.map(note => {
 		if (note.number === noteNumber) {
 			return { ...note, ...updatedData };
