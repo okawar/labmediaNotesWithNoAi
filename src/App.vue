@@ -4,8 +4,7 @@ import { useRoute } from 'vue-router';
 import Header from './components/Header.vue';
 import Footer from './components/Footer.vue';
 import DeleteModal from './components/DeleteModal.vue';
-import AddModal from './components/AddModal.vue';
-import EditModal from './components/EditModal.vue';
+import NoteModal from './components/NoteModal.vue';
 import ImageViewer from './components/ImageViewer.vue';
 import { useNotesStore } from './stores/notes';
 
@@ -13,17 +12,18 @@ const notesStore = useNotesStore();
 const route = useRoute();
 
 const isHomePage = computed(() => route.name === 'Home');
+const isArchivePage = computed(() => route.name === 'Archive');
 </script>
 
 <template>
-	<div class="container">
-		<Header />
+	<div class="container" :class="{ 'archive-page': isArchivePage }">
+		<Header :is-archive-page="isArchivePage" />
 		<router-view />
-		<Footer />
+		<Footer :is-archive-page="isArchivePage"/>
 
-		<AddModal />
+		<NoteModal mode="add" />
+		<NoteModal mode="edit" />
 		<DeleteModal />
-		<EditModal />
 		<ImageViewer />
 
 		<div class="add-note" v-if="isHomePage">
@@ -86,6 +86,7 @@ const isHomePage = computed(() => route.name === 'Home');
 	position: fixed;
 	bottom: 30px;
 	right: 30px;
+	z-index: 1000;
 }
 
 .add-note__btn {

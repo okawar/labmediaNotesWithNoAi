@@ -3,6 +3,10 @@ import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useNotesStore } from '../stores/notes';
 
+defineProps<{
+    isArchivePage?: boolean
+}>()
+
 const notesStore = useNotesStore();
 const route = useRoute();
 
@@ -12,7 +16,7 @@ const notesCount = computed(() => {
 </script>
 
 <template>
-    <div class="footer">
+    <div class="footer" v-show="!isArchivePage">
         <span>Всего заметок: {{ notesCount }}</span>
         <span class="footer__author">
             <!-- Иконка профиля -->

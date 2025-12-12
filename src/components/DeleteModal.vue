@@ -41,16 +41,17 @@ const notesStore = useNotesStore();
     }
 
     .modal {
-        background-color: var(--color-white); 
+        background-color: var(--color-white);
         padding: var(--spacing-l);
-        border-radius: var(--border-radius-m); 
+        border-radius: var(--border-radius-m);
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         width: 600px;
         text-align: center;
+        box-sizing: border-box;
     }
 
     .modal h1 {
-        margin-bottom: var(--spacing-l); 
+        margin-bottom: var(--spacing-l);
     }
 
     .modal p {
@@ -60,25 +61,46 @@ const notesStore = useNotesStore();
     .modal-actions {
         display: flex;
         justify-content: space-around;
+        gap: 16px;
+    }
+
+    .btn-cancel, .btn-delete {
+        padding: var(--spacing-s) var(--spacing-m);
+        width: 240px;
+        border-radius: var(--border-radius-l);
+        cursor: pointer;
+        font-size: 16px;
     }
 
     .btn-cancel {
         background-color: transparent;
         color: var(--color-brand);
-        border: 1px solid var(--color-brand); 
-        padding: var(--spacing-s) var(--spacing-m);
-        width: 240px;
-        border-radius: var(--border-radius-l); 
-        cursor: pointer;
+        border: 1px solid var(--color-brand);
     }
 
     .btn-delete {
-        background-color: var(--color-brand); 
+        background-color: var(--color-brand);
         color: var(--color-white);
         border: none;
-        width: 240px;
-        padding: var(--spacing-s) var(--spacing-m);
-        border-radius: var(--border-radius-l); 
-        cursor: pointer;
+    }
+
+    @media (max-width: 375px) {
+        .modal {
+            width: 340px;
+            height: 370px;
+            padding: var(--spacing-m);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .modal-actions {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn-cancel, .btn-delete {
+            width: 100%;
+        }
     }
 </style>

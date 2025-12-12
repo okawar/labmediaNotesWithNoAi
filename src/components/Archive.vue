@@ -7,7 +7,7 @@ const notesStore = useNotesStore()
 </script>
 <template>
     <div>
-        <h1>Архив</h1>
+        <h2>История заметок</h2>
         <main class="note-list">
             <NoteCard
                 v-for="note in notesStore.archive"
@@ -44,5 +44,12 @@ const notesStore = useNotesStore()
     border: none;
     border-radius: 8px;
     cursor: pointer;
+}
+
+@media (max-width: 375px) {
+    .note-list {
+        width: 340px;
+        margin: 40px auto 0;
+    }
 }
 </style>

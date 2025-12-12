@@ -152,6 +152,18 @@ const viewMode = ref<"grid" | "list">("grid");
     gap: 10px;
 }
 
+@media (max-width: 375px) {
+    .note-list__list, .note-list__grid, .note-list {
+        grid-template-columns: 1fr;
+        width: 340px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .viewModes {
+        display: none;
+    }
+}
+
 .viewModes button {
     border: none;
     cursor: pointer;
