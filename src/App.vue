@@ -223,6 +223,8 @@ function handleEditNote(noteNumber: number, updatedData: { title?: string; conte
 </template>
 
 <style scoped>
+
+	
 .load-more-container {
 	display: flex;
 	justify-content: flex-start;
