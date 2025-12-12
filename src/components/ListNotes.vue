@@ -1,9 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import NoteCard from './NoteCard.vue';
-import type { Note } from '../types/notes';
+import { useNotesStore } from '../stores/notes';
+
+const notesStore = useNotesStore()
 
 const openedMenuNoteId = ref<number | null>(null);
+
+onMounted(() => {
+    if (notesStore.displayedNotes.length === 0) {
+        notesStore.loadMoreNotes();
+    }
+});
 
 function handleToggleMenu(noteNumber: number) {
     if (openedMenuNoteId.value === noteNumber) {
@@ -17,12 +25,6 @@ function handleChangeView(newMode: 'grid' | 'list') {
     viewMode.value = newMode;
     openedMenuNoteId.value = null;
 }
-
-defineProps<{
-    notes: Note[];
-}>();
-
-const emit = defineEmits(['openDeleteModal', 'openEditModal']);
 
 const viewMode = ref<"grid" | "list">("grid");
 </script>
@@ -65,7 +67,6 @@ const viewMode = ref<"grid" | "list">("grid");
                         d="M16.4706 22.3529H10.5882C9.93847 22.3529 9.41174 22.8796 9.41174 23.5294V29.4117C9.41174 30.0615 9.93847 30.5882 10.5882 30.5882H16.4706C17.1203 30.5882 17.647 30.0615 17.647 29.4117V23.5294C17.647 22.8796 17.1203 22.3529 16.4706 22.3529Z"
                         stroke="#1B1B1B" stroke-width="2.35294" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
-
             </div>
         </button>
         <button @click="handleChangeView('list')" :class="{ 'viewMode-active': viewMode === 'list' }">
@@ -79,8 +80,6 @@ const viewMode = ref<"grid" | "list">("grid");
                         d="M22.3529 10.5882H30.5882M22.3529 16.4706H30.5882M22.3529 23.5294H30.5882M22.3529 29.4117H30.5882M10.5882 9.41174H16.4706C17.1203 9.41174 17.647 9.93847 17.647 10.5882V16.4706C17.647 17.1203 17.1203 17.647 16.4706 17.647H10.5882C9.93847 17.647 9.41174 17.1203 9.41174 16.4706V10.5882C9.41174 9.93847 9.93847 9.41174 10.5882 9.41174ZM10.5882 22.3529H16.4706C17.1203 22.3529 17.647 22.8796 17.647 23.5294V29.4117C17.647 30.0615 17.1203 30.5882 16.4706 30.5882H10.5882C9.93847 30.5882 9.41174 30.0615 9.41174 29.4117V23.5294C9.41174 22.8796 9.93847 22.3529 10.5882 22.3529Z"
                         stroke="#1B1B1B" stroke-width="2.35294" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
-
-
             </div>
             <div v-else>
                 <!-- Иконка неактивного списка -->
@@ -92,17 +91,20 @@ const viewMode = ref<"grid" | "list">("grid");
                         d="M22.3529 10.5882H30.5882M22.3529 16.4706H30.5882M22.3529 23.5294H30.5882M22.3529 29.4117H30.5882M10.5882 9.41174H16.4706C17.1203 9.41174 17.647 9.93847 17.647 10.5882V16.4706C17.647 17.1203 17.1203 17.647 16.4706 17.647H10.5882C9.93847 17.647 9.41174 17.1203 9.41174 16.4706V10.5882C9.41174 9.93847 9.93847 9.41174 10.5882 9.41174ZM10.5882 22.3529H16.4706C17.1203 22.3529 17.647 22.8796 17.647 23.5294V29.4117C17.647 30.0615 17.1203 30.5882 16.4706 30.5882H10.5882C9.93847 30.5882 9.41174 30.0615 9.41174 29.4117V23.5294C9.41174 22.8796 9.93847 22.3529 10.5882 22.3529Z"
                         stroke="#1B1B1B" stroke-width="2.35294" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
-
-
             </div>
         </button>
     </div>
     <main class="note-list" :class="`note-list__${viewMode}`">
-        <NoteCard @openDeleteModal="$emit('openDeleteModal', note.number)"
-            @openEditModal="$emit('openEditModal', note)"
+        <NoteCard @openDeleteModal="notesStore.openDeleteModal(note.number)"
+            @openEditModal="notesStore.openEditModal(note)"
             :is-menu-open="openedMenuNoteId === note.number" @toggle-menu="handleToggleMenu(note.number)"
-            v-for="note in notes" :key="note.number" :note="note" :viewMode="viewMode" />
+            v-for="note in notesStore.displayedNotes" :key="note.number" :note="note" :viewMode="viewMode" />
     </main>
+    <div class="load-more-container">
+        <button v-if="notesStore.hasMoreNotes" class="load-more-btn" @click="notesStore.loadMoreNotes">
+            Загрузить еще
+        </button>
+    </div>
 </template>
 
 <style scoped>

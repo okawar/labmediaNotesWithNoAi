@@ -1,14 +1,11 @@
 <script setup lang="ts">
-    defineProps<{
-        modalDeleteVisible: boolean;
-        noteToDelete: number | null;
-    }>();
+import { useNotesStore } from '../stores/notes';
 
-    const emit = defineEmits(['closeDeleteModal', 'deleteNote']);
+const notesStore = useNotesStore();
 </script>
 
 <template>
-    <div class="modal-backdrop" v-show="modalDeleteVisible">
+    <div class="modal-backdrop" v-show="notesStore.isDeleteModalOpen">
         <div class="modal">
             <span>
                 <!-- Иконка удаления -->
@@ -22,11 +19,11 @@
             <h1>Удалить заметку</h1>
             <p>Удаленная заметка попадет в архив без возможности восстановления</p>
             <div class="modal-actions">
-                <button class="btn-cancel" @click="emit('closeDeleteModal')">Отменить</button>
-                <button class="btn-delete" @click="emit('deleteNote', noteToDelete)">Удалить</button>
+                <button class="btn-cancel" @click="notesStore.closeDeleteModal()">Отменить</button>
+                <button class="btn-delete" @click="notesStore.confirmDelete()">Удалить</button>
             </div>
         </div>
-    </div>   
+    </div>
 </template>
 
 <style scoped>

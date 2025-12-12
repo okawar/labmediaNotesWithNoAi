@@ -1,12 +1,12 @@
 <script setup lang="ts">
-    defineProps<{
-        count: number;
-    }>();
+import { useNotesStore } from '../stores/notes';
+
+const notesStore = useNotesStore();
 </script>
 
 <template>
     <div class="footer">
-        <span>Всего заметок: {{ count }}</span>
+        <span>Всего заметок: {{ notesStore.countNotes }}</span>
         <span class="footer__author">
             <!-- Иконка профиля -->
             <svg width="36" height="36" viewBox="0 0 36 36" fill="none"

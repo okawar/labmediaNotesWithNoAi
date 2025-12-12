@@ -1,19 +1,22 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import type { Note } from '../types/notes';
+import { ref, watch } from 'vue';
+import { useNotesStore } from '../stores/notes';
 
-const props = defineProps<{
-    modalEditVisible: boolean;
-    note: Note
-}>();
-
-const emit = defineEmits(['closeEditModal', 'editNote']);
+const notesStore = useNotesStore();
 
 const editedTitle = ref('');
 const editedContent = ref('');
-const imgSrc = ref<string | null>(props.note.imgSrc || null);
+const imgSrc = ref<string | null>(null);
 
 const fileInput = ref<HTMLInputElement | null>(null);
+
+watch(() => notesStore.noteToEdit, (newNote) => {
+    if (newNote) {
+        editedTitle.value = newNote.title;
+        editedContent.value = newNote.content || '';
+        imgSrc.value = newNote.imgSrc || null;
+    }
+});
 
 function triggerFileInput() {
     fileInput.value?.click();
@@ -31,27 +34,26 @@ function handleFileChange(event: Event) {
     }
 }
 
-onMounted(() => {
-    editedTitle.value = props.note.title;
-    editedContent.value = props.note.content || '';
-    imgSrc.value = props.note.imgSrc || null;
-})
-
 function saveChanges() {
-    emit(
-        'editNote', props.note.number,
-        { title: editedTitle.value, content: editedContent.value, imgSrc: imgSrc.value || undefined }
-    );
-    emit('closeEditModal');
+    if (notesStore.noteToEdit) {
+        notesStore.editNote(
+            notesStore.noteToEdit.number,
+            {
+                title: editedTitle.value,
+                content: editedContent.value,
+                imgSrc: imgSrc.value || undefined
+            }
+        );
+    }
 }
 </script>
 
 <template>
-    <div class="modal-backdrop" v-show="modalEditVisible">
+    <div class="modal-backdrop" v-if="notesStore.isEditModalOpen && notesStore.noteToEdit">
         <div class="modal">
             <span class="modal-heading">
                 <h2 class="modal-title">Редактирование заметки</h2>
-                <button @click="emit('closeEditModal')">
+                <button @click="notesStore.closeEditModal()">
                     <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <mask id="path-1-inside-1_366_575" fill="white">
                             <path d="M0 0H34V34H0V0Z" />
@@ -91,7 +93,7 @@ function saveChanges() {
                     </button>
                 </div>
                 <div class="button-group">
-                    <button type="button" class="modal-btn-cancel" @click="emit('closeEditModal')">Отменить</button>
+                    <button type="button" class="modal-btn-cancel" @click="notesStore.closeEditModal()">Отменить</button>
                     <button type="submit" class="modal-btn-edit" @click.prevent="saveChanges()">Сохранить</button>
                 </div>
             </form>

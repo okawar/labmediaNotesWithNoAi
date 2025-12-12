@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useNotesStore } from '../stores/notes';
 
-defineProps<{
-    modalAddVisible: boolean;
-}>();
-
-const emit = defineEmits(['closeAddModal', 'addNote']);
+const notesStore = useNotesStore();
 
 const title = ref('');
 const content = ref('');
@@ -39,22 +36,21 @@ const clearForm = () => {
 };
 
 const saveNote = () => {
-    emit('addNote', {
+    notesStore.addNote({
         title: title.value,
         content: content.value,
         imgSrc: imgSrc.value || undefined,
     });
     clearForm();
-    emit('closeAddModal');
 };
 </script>
 
 <template>
-    <div class="modal-backdrop" v-show="modalAddVisible">
+    <div class="modal-backdrop" v-show="notesStore.isAddModalOpen">
         <div class="modal">
             <span class="modal-heading">
                 <h2 class="modal-title">Новая заметка</h2>
-                <button @click="emit('closeAddModal')">
+                <button @click="notesStore.closeAddModal()">
                     <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <mask id="path-1-inside-1_366_575" fill="white">
                             <path d="M0 0H34V34H0V0Z" />
@@ -95,7 +91,7 @@ const saveNote = () => {
                 </div>
                 <div class="button-group">
                     <button type="button" class="modal-btn-cancel"
-                        @click="emit('closeAddModal'); clearForm()">Отменить</button>
+                        @click="notesStore.closeAddModal(); clearForm()">Отменить</button>
                     <button type="submit" class="modal-btn-add" @click.prevent="saveNote">Сохранить</button>
                 </div>
             </form>
