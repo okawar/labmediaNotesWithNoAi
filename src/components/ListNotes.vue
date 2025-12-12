@@ -96,9 +96,9 @@ const viewMode = ref<"grid" | "list">("grid");
     </div>
     <main class="note-list" :class="`note-list__${viewMode}`">
         <NoteCard @openDeleteModal="notesStore.openDeleteModal(note.number)"
-            @openEditModal="notesStore.openEditModal(note)"
-            :is-menu-open="openedMenuNoteId === note.number" @toggle-menu="handleToggleMenu(note.number)"
-            v-for="note in notesStore.displayedNotes" :key="note.number" :note="note" :viewMode="viewMode" />
+            @openEditModal="notesStore.openEditModal(note)" @openImageViewer="notesStore.openImageViewer" :is-menu-open="openedMenuNoteId === note.number"
+            @toggle-menu="handleToggleMenu(note.number)" v-for="note in notesStore.displayedNotes" :key="note.number"
+            :note="note" :viewMode="viewMode" />
     </main>
     <div class="load-more-container">
         <button v-if="notesStore.hasMoreNotes" class="load-more-btn" @click="notesStore.loadMoreNotes">
@@ -108,6 +108,23 @@ const viewMode = ref<"grid" | "list">("grid");
 </template>
 
 <style scoped>
+.load-more-container {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.load-more-btn {
+    margin-top: var(--spacing-m);
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: var(--color-brand);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
 .note-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(468px, 1fr));

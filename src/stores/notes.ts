@@ -72,6 +72,7 @@ export const useNotesStore = defineStore("notes", {
                 created_at: "05.04.2024",
             },
         ] as Note[],
+        archive: [] as Note[],
         searchQuery: '',
         visibleNotesCount: 6,
         isAddModalOpen: false,
@@ -79,6 +80,8 @@ export const useNotesStore = defineStore("notes", {
         isDeleteModalOpen: false,
         noteToEdit: null as Note | null,
         noteNumberToDelete: null as number | null,
+        isImageViewerOpen: false,
+        imageToShow: '',
     }),
 
     getters: {
@@ -103,6 +106,14 @@ export const useNotesStore = defineStore("notes", {
     },
 
     actions: {
+        openImageViewer(imageUrl: string) {
+            this.isImageViewerOpen = true;
+            this.imageToShow = imageUrl;
+        },
+        closeImageViewer() {
+            this.isImageViewerOpen = false;
+            this.imageToShow = '';
+        },
         handleSearch(query: string) {
             this.searchQuery = query;
             this.visibleNotesCount = 6;
@@ -158,9 +169,11 @@ export const useNotesStore = defineStore("notes", {
         },
         confirmDelete() {
             if (this.noteNumberToDelete !== null) {
-                this.notes = this.notes.filter(
-                    (n) => n.number !== this.noteNumberToDelete
-                );
+                const noteToArchive = this.notes.find(n => n.number === this.noteNumberToDelete);
+                if (noteToArchive) {
+                    this.archive.unshift(noteToArchive);
+                }
+                this.notes = this.notes.filter(n => n.number !== this.noteNumberToDelete);
             }
             this.closeDeleteModal();
         },

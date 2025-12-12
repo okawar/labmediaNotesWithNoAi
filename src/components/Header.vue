@@ -5,7 +5,7 @@ const emit = defineEmits(['search'])
 </script>
 <template>
     <header class="header">
-        <router-link to="/">
+        <router-link to="/" style="text-decoration: none;">
             <h1 class="header-logo">Notes</h1>
         </router-link>
         <div class="search-wrapper">

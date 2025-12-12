@@ -1,12 +1,18 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
 import Header from './components/Header.vue';
 import Footer from './components/Footer.vue';
 import DeleteModal from './components/DeleteModal.vue';
 import AddModal from './components/AddModal.vue';
 import EditModal from './components/EditModal.vue';
+import ImageViewer from './components/ImageViewer.vue';
 import { useNotesStore } from './stores/notes';
 
 const notesStore = useNotesStore();
+const route = useRoute();
+
+const isHomePage = computed(() => route.name === 'Home');
 </script>
 
 <template>
@@ -15,11 +21,12 @@ const notesStore = useNotesStore();
 		<router-view />
 		<Footer />
 
-			<AddModal />
+		<AddModal />
 		<DeleteModal />
 		<EditModal />
+		<ImageViewer />
 
-		<div class="add-note">
+		<div class="add-note" v-if="isHomePage">
 			<button class="add-note__btn" @click="notesStore.openAddModal">
 				<svg width="102" height="102" viewBox="0 0 102 102" fill="none" xmlns="http://www.w3.org/2000/svg">
 					<g filter="url(#filter0_dd_23_829)">

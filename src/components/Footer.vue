@@ -1,12 +1,19 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
 import { useNotesStore } from '../stores/notes';
 
 const notesStore = useNotesStore();
+const route = useRoute();
+
+const notesCount = computed(() => {
+    return route.name === 'Archive' ? notesStore.archive.length : notesStore.notes.length;
+});
 </script>
 
 <template>
     <div class="footer">
-        <span>Всего заметок: {{ notesStore.countNotes }}</span>
+        <span>Всего заметок: {{ notesCount }}</span>
         <span class="footer__author">
             <!-- Иконка профиля -->
             <svg width="36" height="36" viewBox="0 0 36 36" fill="none"
