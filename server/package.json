@@ -1,0 +1,16 @@
+{
+    "name": "notes-app-server",
+    "version": "1.0.0",
+    "description": "Simple server for notes-app",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "okawar",
+    "license": "ISC",
+    "dependencies": {
+        "busboy": "^1.6.0",
+        "busboy-esm": "^1.0.2"
+    }
+}

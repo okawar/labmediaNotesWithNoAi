@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import Header from './components/Header.vue';
 import Footer from './components/Footer.vue';
@@ -13,6 +13,10 @@ const route = useRoute();
 
 const isHomePage = computed(() => route.name === 'Home');
 const isArchivePage = computed(() => route.name === 'Archive');
+
+onMounted(() => {
+	notesStore.fetchNotes();
+});
 </script>
 
 <template>

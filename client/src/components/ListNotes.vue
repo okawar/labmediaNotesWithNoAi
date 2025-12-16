@@ -95,9 +95,9 @@ const viewMode = ref<"grid" | "list">("grid");
         </button>
     </div>
     <main class="note-list" :class="`note-list__${viewMode}`">
-        <NoteCard @openDeleteModal="notesStore.openDeleteModal(note.number)"
-            @openEditModal="notesStore.openEditModal(note)" @openImageViewer="notesStore.openImageViewer" :is-menu-open="openedMenuNoteId === note.number"
-            @toggle-menu="handleToggleMenu(note.number)" v-for="note in notesStore.displayedNotes" :key="note.number"
+        <NoteCard @openDeleteModal="notesStore.openDeleteModal(note.id)"
+            @openEditModal="notesStore.openEditModal(note)" @openImageViewer="notesStore.openImageViewer" :is-menu-open="openedMenuNoteId === note.id"
+            @toggle-menu="handleToggleMenu(note.id)" v-for="note in notesStore.displayedNotes" :key="note.id"
             :note="note" :viewMode="viewMode" />
     </main>
     <div class="load-more-container">

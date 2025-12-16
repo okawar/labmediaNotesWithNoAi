@@ -11,7 +11,7 @@ const notesStore = useNotesStore()
         <main class="note-list">
             <NoteCard
                 v-for="note in notesStore.archive"
-                :key="note.number"
+                :key="note.id"
                 :note="note"
                 viewMode="list"
                 :isArchive="true"

@@ -9,17 +9,27 @@ defineProps<{
 }>();
 
 const emit = defineEmits(['toggle-menu', 'openDeleteModal', 'openEditModal', 'openImageViewer']);
+
+const formatDate = (dateString: string) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('ru-RU', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
+};
 </script>
 
 <template>
     <div class="note-card" :class="`note-card-${viewMode}`">
         <div class="note-card__header">
-            <span class="note-card__title-group" :class="{'note-card__title-group--with-image' : note.imgSrc}">
-                <div v-if="viewMode === 'list' && note.imgSrc" class="note-card__image-wrapper--list" @click.stop="emit('openImageViewer', note.imgSrc || '')">
-                    <img :src="note.imgSrc" alt="" class="note-card__image">
+            <span class="note-card__title-group" :class="{'note-card__title-group--with-image' : note.image}">
+                <div v-if="viewMode === 'list' && note.image" class="note-card__image-wrapper--list" @click.stop="emit('openImageViewer', note.image || '')">
+                    <img :src="note.image" alt="" class="note-card__image">
                 </div>
                 <div>
-                    <h1>#{{ note.number }}</h1>
+                    <h1>#{{ note.id }}</h1>
                     <h1>{{ note.title }}</h1>
                 </div>
             </span>
@@ -41,13 +51,13 @@ const emit = defineEmits(['toggle-menu', 'openDeleteModal', 'openEditModal', 'op
                         <button @click="emit('openEditModal', note)">
                             <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.9999 10.0006L24.9999 14.0006M27.1739 11.8126C27.7026 11.284 27.9997 10.5671 27.9998 9.81946C27.9999 9.07185 27.703 8.35482 27.1744 7.82611C26.6459 7.2974 25.9289 7.00032 25.1813 7.00023C24.4337 7.00014 23.7166 7.29703 23.1879 7.82561L9.84193 21.1746C9.60975 21.4061 9.43805 21.6911 9.34193 22.0046L8.02093 26.3566C7.99509 26.4431 7.99314 26.535 8.01529 26.6225C8.03743 26.71 8.08285 26.7898 8.14673 26.8536C8.21061 26.9174 8.29055 26.9627 8.37809 26.9847C8.46563 27.0067 8.55749 27.0046 8.64393 26.9786L12.9969 25.6586C13.3101 25.5634 13.5951 25.3927 13.8269 25.1616L27.1739 11.8126Z" stroke="#1B1B1B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </button>
-                        <button @click="$emit('openDeleteModal', note.number)">
+                        <button @click="$emit('openDeleteModal', note.id)">
                             <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 16V22M19 16V22M24 11V25C24 25.5304 23.7893 26.0391 23.4142 26.4142C23.0391 26.7893 22.5304 27 22 27H12C11.4696 27 10.9609 26.7893 10.5858 26.4142C10.2107 26.0391 10 25.5304 10 25V11M8 11H26M13 11V9C13 8.46957 13.2107 7.96086 13.5858 7.58579C13.9609 7.21071 14.4696 7 15 7H19C19.5304 7 20.0391 7.21071 20.4142 7.58579C20.7893 7.96086 21 8.46957 21 9V11" stroke="#1B1B1B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </button>
                     </div>
                 </div>
                 <div class="note-actions note-actions--list">
-                    <button @click="$emit('openDeleteModal', note.number)">
+                    <button @click="$emit('openDeleteModal', note.id)">
                         <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 16V22M19 16V22M24 11V25C24 25.5304 23.7893 26.0391 23.4142 26.4142C23.0391 26.7893 22.5304 27 22 27H12C11.4696 27 10.9609 26.7893 10.5858 26.4142C10.2107 26.0391 10 25.5304 10 25V11M8 11H26M13 11V9C13 8.46957 13.2107 7.96086 13.5858 7.58579C13.9609 7.21071 14.4696 7 15 7H19C19.5304 7 20.0391 7.21071 20.4142 7.58579C20.7893 7.96086 21 8.46957 21 9V11" stroke="#1B1B1B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     </button>
                     <button @click="$emit('openEditModal', note)">
@@ -56,11 +66,11 @@ const emit = defineEmits(['toggle-menu', 'openDeleteModal', 'openEditModal', 'op
                 </div>
             </div>
         </div>
-        <p>{{ note.content }}</p>
-        <div v-if="viewMode==='grid' && note.imgSrc && !isArchive" class="note-card__image-wrapper--grid" @click.stop="emit('openImageViewer', note.imgSrc || '')">
-            <img :src="note.imgSrc" alt="" class="note-card__image">
+        <p>{{ note.text }}</p>
+        <div v-if="viewMode==='grid' && note.image && !isArchive" class="note-card__image-wrapper--grid" @click.stop="emit('openImageViewer', note.image || '')">
+            <img :src="note.image" alt="" class="note-card__image">
         </div>
-        <span class="note-card__date">{{ note.created_at }}</span>
+        <span class="note-card__date">{{ formatDate(note.date) }}</span>
     </div>
 </template>
 
