@@ -105,55 +105,61 @@ watch(isModalOpen, (isOpen) => {
     if (!isOpen) {
         clearForm();
     }
-})
+});
+
+const isFormValid = computed(() => {
+    return title.value.trim() !== '';
+});
 
 </script>
 
 <template>
-    <div class="modal-backdrop" v-show="isModalOpen">
-        <div class="modal">
-            <span class="modal-heading">
-                <h2 class="modal-title">{{ modalTitle }}</h2>
-                <button @click="closeModal" class="modal-close-btn">
-                    <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <mask id="path-1-inside-1_366_575" fill="white">
-                            <path d="M0 0H34V34H0V0Z" />
-                        </mask>
-                        <path d="M34 34V33H0V34V35H34V34Z" fill="#E1D9E8" fill-opacity="0.3"
-                            mask="url(#path-1-inside-1_366_575)" />
-                        <path d="M23 11L11 23M11 11L23 23" stroke="#1B1B1B" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" />
-                    </svg>
-                </button>
-            </span>
-            <form action="" class="modal-form" @submit.prevent="saveNote">
-                <div class="form-header">
-                    <button type="button" class="modal-btn-add-image" @click="triggerFileInput">
+    <transition name="fade">
+        <div class="modal-backdrop" v-if="isModalOpen">
+            <div class="modal">
+                <span class="modal-heading">
+                    <h2 class="modal-title">{{ modalTitle }}</h2>
+                    <button @click="closeModal" class="modal-close-btn">
                         <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M21 10.5H27M24 7.5V13.5M26 17V24.5C26 25.0304 25.7893 25.5391 25.4142 25.9142C25.0391 26.2893 24.5304 26.5 24 26.5H10C9.46957 26.5 8.96086 26.2893 8.58579 25.9142C8.21071 25.5391 8 25.0304 8 24.5V10.5C8 9.96957 8.21071 9.46086 8.58579 9.08579C8.96086 8.71071 9.46957 8.5 10 8.5H17.5M26 20.5L22.914 17.414C22.5389 17.0391 22.0303 16.8284 21.5 16.8284C20.9697 16.8284 20.4611 17.0391 20.086 17.414L11 26.5M16 14.5C16 15.6046 15.1046 16.5 14 16.5C12.8954 16.5 12 15.6046 12 14.5C12 13.3954 12.8954 12.5 14 12.5C15.1046 12.5 16 13.3954 16 14.5Z"
-                                stroke="#1B1B1B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            <mask id="path-1-inside-1_366_575" fill="white">
+                                <path d="M0 0H34V34H0V0Z" />
+                            </mask>
+                            <path d="M34 34V33H0V34V35H34V34Z" fill="#E1D9E8" fill-opacity="0.3"
+                                mask="url(#path-1-inside-1_366_575)" />
+                            <path d="M23 11L11 23M11 11L23 23" stroke="#1B1B1B" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
                         </svg>
                     </button>
-                </div>
-                <input v-model="title" type="text" required placeholder="Заголовок*" class="modal-input-title" />
-                <textarea v-model="text" placeholder="Текст заметки" class="modal-textarea-text"
-                    :class="{ 'with-image': imagePreview }"></textarea>
-                <input type="file" ref="fileInput" @change="handleFileChange" accept="image/*" style="display: none;" />
+                </span>
+                <form action="" class="modal-form" @submit.prevent="saveNote">
+                    <div class="form-header">
+                        <button type="button" class="modal-btn-add-image" @click="triggerFileInput">
+                            <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M21 10.5H27M24 7.5V13.5M26 17V24.5C26 25.0304 25.7893 25.5391 25.4142 25.9142C25.0391 26.2893 24.5304 26.5 24 26.5H10C9.46957 26.5 8.96086 26.2893 8.58579 25.9142C8.21071 25.5391 8 25.0304 8 24.5V10.5C8 9.96957 8.21071 9.46086 8.58579 9.08579C8.96086 8.71071 9.46957 8.5 10 8.5H17.5M26 20.5L22.914 17.414C22.5389 17.0391 22.0303 16.8284 21.5 16.8284C20.9697 16.8284 20.4611 17.0391 20.086 17.414L11 26.5M16 14.5C16 15.6046 15.1046 16.5 14 16.5C12.8954 16.5 12 15.6046 12 14.5C12 13.3954 12.8954 12.5 14 12.5C15.1046 12.5 16 13.3954 16 14.5Z"
+                                    stroke="#1B1B1B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                    </div>
+                    <input v-model="title" type="text" required placeholder="Заголовок*" class="modal-input-title" />
+                    <textarea v-model="text" placeholder="Текст заметки" class="modal-textarea-text"
+                        :class="{ 'with-image': imagePreview }"></textarea>
+                    <input type="file" ref="fileInput" @change="handleFileChange" accept="image/*" style="display: none;" />
 
-                <div v-if="imagePreview" class="image-preview">
-                    <img :src="imagePreview" alt="Предпросмотр изображения" />
-                    <button type="button" @click="removeImage" class="image-preview__remove-btn">
-                        &times;
-                    </button>
-                </div>
-                <div class="button-group">
-                    <button type="button" class="modal-btn-cancel" @click="closeModal">Отменить</button>
-                    <button type="submit" class="modal-btn-add">Сохранить</button>
-                </div>
-            </form>
+                    <div v-if="imagePreview" class="image-preview">
+                        <img :src="imagePreview" alt="Предпросмотр изображения" />
+                        <button type="button" @click="removeImage" class="image-preview__remove-btn">
+                            &times;
+                        </button>
+                    </div>
+                    <div class="button-group">
+                        <button type="button" class="modal-btn-cancel" @click="closeModal">Отменить</button>
+                        <button type="submit" class="modal-btn-add" :disabled="!isFormValid" :class="{ 'modal-btn-add--disabled': !isFormValid }">Сохранить</button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
+    </transition>
 </template>
 
 <style scoped>
@@ -168,6 +174,7 @@ watch(isModalOpen, (isOpen) => {
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    transition: opacity 0.3s ease;
 }
 
 .modal {
@@ -176,6 +183,7 @@ watch(isModalOpen, (isOpen) => {
     border-radius: var(--border-radius-m);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     width: 950px;
+    transition: all 0.3s ease;
 }
 
 .modal-heading {
@@ -289,6 +297,12 @@ watch(isModalOpen, (isOpen) => {
     background-color: var(--color-brand);
     color: var(--color-white);
     border: none;
+    transition: background-color 0.3s ease;
+}
+
+.modal-btn-add--disabled {
+    background-color: var(--color-bg-card);
+    cursor: not-allowed;
 }
 
 @media (max-width: 375px) {

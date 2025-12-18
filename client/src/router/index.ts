@@ -1,13 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 import Archive from "../components/Archive.vue";
-import ListNotes from "../components/ListNotes.vue";
+import Notes from "../views/Notes.vue";
 
 const routes = [
     {
         path: '/',
         name: 'Home',
-        component: ListNotes
+        component: Notes
     },
     {
         path: '/archive',

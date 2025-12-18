@@ -5,19 +5,21 @@ const notesStore = useNotesStore();
 </script>
 
 <template>
-    <div v-if="notesStore.isImageViewerOpen" class="image-viewer-backdrop" @click="notesStore.closeImageViewer">
-        <div class="image-viewer-content" @click.stop>
-            <img :src="notesStore.imageToShow" alt="Full size image" class="zoomed-image">
-            <button @click="notesStore.closeImageViewer" class="close-btn">
-                <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="34" height="34" rx="17" fill="white" />
-                    <path d="M23 11L11 23M11 11L23 23" stroke="#1B1B1B" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                </svg>
+    <transition name="fade">
+        <div v-if="notesStore.isImageViewerOpen" class="image-viewer-backdrop" @click="notesStore.closeImageViewer">
+            <div class="image-viewer-content" @click.stop>
+                <img :src="notesStore.imageToShow" alt="Full size image" class="zoomed-image">
+                <button @click="notesStore.closeImageViewer" class="close-btn">
+                    <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="34" height="34" rx="17" fill="white" />
+                        <path d="M23 11L11 23M11 11L23 23" stroke="#1B1B1B" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
 
-            </button>
+                </button>
+            </div>
         </div>
-    </div>
+    </transition>
 </template>
 
 <style scoped>
@@ -32,12 +34,14 @@ const notesStore = useNotesStore();
     justify-content: center;
     align-items: center;
     z-index: 2000;
+    transition: opacity 0.3s ease;
 }
 
 .image-viewer-content {
     position: relative;
     width: 800px;
     height: 80%;
+    transition: all 0.3s ease;
 }
 
 .zoomed-image {

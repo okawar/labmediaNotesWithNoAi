@@ -9,9 +9,7 @@ defineProps<{
 </script>
 <template>
     <header class="header">
-        <router-link to="/" style="text-decoration: none;">
-            <h1 class="header-logo">Notes</h1>
-        </router-link>
+        <h1 class="header-logo">Notes</h1>
         <div class="search-wrapper" v-if="!isArchivePage">
             <!-- Иконка поиска -->
             <svg class="search-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -25,7 +23,7 @@ defineProps<{
             <input class="header-search" type="text" id="header-search" name="header-search" placeholder="Поиск"
                 @input="$emit('search', ($event.target as HTMLInputElement).value)" />
         </div>
-        <router-link to="/archive" v-if="!isArchivePage">
+        <router-link to="/archive" v-if="!isArchivePage" class="archive-link">
             <button class="header-button">
                 <span class="archive-icon">
                     <svg width="100" height="36" viewBox="0 0 100 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -55,29 +53,31 @@ defineProps<{
 }
 
 .header-logo {
-    font-size: 42px;
-    -webkit-text-stroke: 1px var(--color-card-border);
+    font-size: var(--heading-xl);
+    -webkit-text-stroke: 1px var(--color-bg-card);
     color: var(--color-text);
+    cursor: default;
 }
 
 .header-search {
-    width: 820px;
+    width: 100%;
+    box-sizing: border-box;
     padding: var(--spacing-s) 0 var(--spacing-s) 50px;
     border-radius: var(--border-radius-l);
     border: none;
     background-color: var(--color-bg-card);
-    font-size: 18px;
-    color: #000;
+    font-size: var(--body-4);
+    color: var(--color-black);
 }
 
 .header-button {
     width: 240px;
-    padding: 15px 0;
-    background-color: var(--color-brand);
+    padding: var(--spacing-sm) 0;
+    background-color: var(--color-brand-a56);
     border: none;
-    color: #fff;
+    color: var(--color-white);
     border-radius: var(--border-radius-l);
-    font-size: 18px;
+    font-size: var(--body-4);
     cursor: pointer;
 }
 
@@ -85,6 +85,8 @@ defineProps<{
     position: relative;
     display: flex;
     align-items: center;
+    flex: 1;
+    margin: 0 var(--spacing-l);
 }
 
 .search-icon {
@@ -98,36 +100,43 @@ defineProps<{
 
 @media (max-width: 375px) {
     .header {
-        flex-wrap: wrap;
-        gap: 16px;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-template-areas:
+            "search search"
+            "logo archive";
+        gap: var(--spacing-m);
+        align-items: center;
     }
 
     .search-wrapper {
-        order: 1;
+        grid-area: search;
+        margin: 0;
         width: 100%;
     }
 
-    .header-search {
-        width: 340px;
-        height: 40px;
-        box-sizing: border-box;
+    .header-logo {
+        grid-area: logo;
     }
 
-    .header > a:first-child { 
-        order: 2;
+    .archive-link {
+        grid-area: archive;
+        justify-self: end;
     }
-    
-    .header > a:last-child { 
-        order: 2;
+
+    .header-search {
+        width: 100%;
+        height: 40px;
+        box-sizing: border-box;
     }
     
     .header-button {
         width: 100px;
         height: 36px;
-        background: rgba(225, 217, 232, 0.3);
-        border-radius: 50px;
+        background: var(--color-bg-card-a30);
+        border-radius: var(--border-radius-l);
         color: var(--color-text);
-        font-weight: 500;
+        font-weight: var(--font-weight-medium);
         display: flex;
         align-items: center;
         justify-content: center;

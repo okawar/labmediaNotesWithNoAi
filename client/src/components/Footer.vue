@@ -57,4 +57,10 @@ const notesCount = computed(() => {
         width: 230px;
         justify-content: space-between;
     }
+
+    @media (max-width: 375px) {
+        .footer{
+            display: none;
+        }
+    }
 </style>

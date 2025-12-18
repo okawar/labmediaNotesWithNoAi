@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import NoteCard from './NoteCard.vue';
 import { useNotesStore } from '../stores/notes';
 
@@ -7,10 +7,34 @@ const notesStore = useNotesStore()
 
 const openedMenuNoteId = ref<number | null>(null);
 
+const loader = ref(null);
+
 onMounted(() => {
     if (notesStore.displayedNotes.length === 0) {
         notesStore.loadMoreNotes();
     }
+
+    const observer = new IntersectionObserver(
+        (entries) => {
+            const firstEntry = entries[0];
+            if (firstEntry && firstEntry.isIntersecting && notesStore.hasMoreNotes) {
+                notesStore.loadMoreNotes();
+            }
+        },
+        {
+            rootMargin: '200px',
+        }
+    );
+
+    if (loader.value) {
+        observer.observe(loader.value);
+    }
+
+    onUnmounted(() => {
+        if (loader.value) {
+            observer.unobserve(loader.value);
+        }
+    });
 });
 
 function handleToggleMenu(noteNumber: number) {
@@ -100,39 +124,12 @@ const viewMode = ref<"grid" | "list">("grid");
             @toggle-menu="handleToggleMenu(note.id)" v-for="note in notesStore.displayedNotes" :key="note.id"
             :note="note" :viewMode="viewMode" />
     </main>
-    <div class="load-more-container">
-        <button v-if="notesStore.hasMoreNotes" class="load-more-btn" @click="notesStore.loadMoreNotes">
-            Загрузить еще
-        </button>
-    </div>
+    <div ref="loader"></div>
 </template>
 
 <style scoped>
-.load-more-container {
-    display: flex;
-    justify-content: flex-start;
-}
-
-.load-more-btn {
-    margin-top: var(--spacing-m);
-    padding: 12px 24px;
-    font-size: 16px;
-    font-weight: bold;
-    color: white;
-    background-color: var(--color-brand);
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-}
 
 .note-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(468px, 1fr));
-    gap: 20px;
-    margin-top: 40px;
-}
-
-.note-list__grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(468px, 1fr));
     gap: 20px;
