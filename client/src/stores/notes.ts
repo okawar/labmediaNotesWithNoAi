@@ -8,7 +8,6 @@ export const useNotesStore = defineStore("notes", {
         notes: [] as Note[],
         archive: [] as Note[],
         searchQuery: "",
-        visibleNotesCount: 6,
         isAddModalOpen: false,
         isEditModalOpen: false,
         isDeleteModalOpen: false,
@@ -16,48 +15,41 @@ export const useNotesStore = defineStore("notes", {
         noteNumberToDelete: null as number | null,
         isImageViewerOpen: false,
         imageToShow: "",
+        page: 1,
+        limit: 6,
+        total: 0,
     }),
 
     getters: {
-        filteredNotes(state): Note[] {
-            if (!state.searchQuery) {
-                return state.notes;
-            }
-            return state.notes.filter(
-                (note) =>
-                    note.title
-                        .toLowerCase()
-                        .includes(state.searchQuery.toLowerCase()) ||
-                    (note.text &&
-                        note.text
-                            .toLowerCase()
-                            .includes(state.searchQuery.toLowerCase()))
-            );
-        },
         displayedNotes(state): Note[] {
-            const notesToDisplay = this.filteredNotes;
-            if (!Array.isArray(notesToDisplay)) {
-                return [];
-            }
-            return notesToDisplay.slice(0, state.visibleNotesCount);
-        },
-        countNotes(state): number {
-            return state.notes.length;
+            return state.notes;
         },
         hasMoreNotes(state): boolean {
-            return state.visibleNotesCount < this.filteredNotes.length;
+            return state.notes.length < state.total;
         },
     },
 
     actions: {
-        async fetchNotes() {
+        async fetchNotes(isLoadMore = false) {
             try {
-                const response = await fetch(`${BASE_API_URL}/notes`);
+                const url = new URL(`${BASE_API_URL}/notes`);
+                url.searchParams.append('page', this.page.toString());
+                url.searchParams.append('limit', this.limit.toString());
+                if (this.searchQuery) {
+                    url.searchParams.append('search', this.searchQuery);
+                }
+
+                const response = await fetch(url.toString());
                 if (!response.ok) {
                     throw new Error("Failed to fetch notes");
                 }
                 const data = await response.json();
-                this.notes = data.notes;
+                if (isLoadMore) {
+                    this.notes = [...this.notes, ...data.notes];
+                } else {
+                    this.notes = data.notes;
+                }
+                this.total = data.total;
             } catch (e) {
                 console.error(e);
             }
@@ -72,11 +64,15 @@ export const useNotesStore = defineStore("notes", {
         },
         handleSearch(query: string) {
             this.searchQuery = query;
-            this.visibleNotesCount = 6;
+            this.page = 1;
+            this.fetchNotes();
         },
 
         loadMoreNotes() {
-            this.visibleNotesCount += 6;
+            if (this.hasMoreNotes) {
+                this.page += 1;
+                this.fetchNotes(true);
+            }
         },
 
         async addNote(newNoteData: {

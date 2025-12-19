@@ -305,7 +305,7 @@ const isFormValid = computed(() => {
     cursor: not-allowed;
 }
 
-@media (max-width: 375px) {
+@media (max-width: 720px) {
     .modal {
         padding-top: 20px;
         max-width: 340px;

@@ -98,7 +98,7 @@ defineProps<{
     display: none;
 }
 
-@media (max-width: 375px) {
+@media (max-width: 720px) {
     .header {
         display: grid;
         grid-template-columns: auto 1fr;

@@ -230,7 +230,7 @@ const formatDate = (dateString: string) => {
         display: block;
     }
 
-    @media (max-width: 375px) {
+    @media (max-width: 720px) {
         .note-card__header .note-card__title-group {
             display: none;
         }

@@ -88,7 +88,7 @@ const notesStore = useNotesStore();
         border: none;
     }
 
-    @media (max-width: 375px) {
+    @media (max-width: 720px) {
         .modal {
             width: 340px;
             height: 370px;

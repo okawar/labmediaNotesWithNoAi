@@ -59,7 +59,7 @@ const notesStore = useNotesStore();
     cursor: pointer;
 }
 
-@media (max-width: 375px) {
+@media (max-width: 720px) {
     .image-viewer-content{
         height: 40%;
         border-radius: 8px;

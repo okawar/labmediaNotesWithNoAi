@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import NoteCard from './NoteCard.vue';
+import NoteCard from '../components/NoteCard.vue';
 import { useNotesStore } from '../stores/notes';
 
 const notesStore = useNotesStore()
@@ -46,7 +46,7 @@ const notesStore = useNotesStore()
     cursor: pointer;
 }
 
-@media (max-width: 375px) {
+@media (max-width: 720px) {
     .note-list {
         width: 340px;
         margin: 40px auto 0;
