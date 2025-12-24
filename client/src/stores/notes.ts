@@ -102,6 +102,7 @@ export const useNotesStore = defineStore("notes", {
                     throw new Error("Failed to add note");
                 }
 
+                this.page = 1;
                 await this.fetchNotes();
                 this.closeAddModal();
             } catch (e) {
@@ -191,6 +192,7 @@ export const useNotesStore = defineStore("notes", {
                     throw new Error("Failed to delete note");
                 }
 
+                this.page = 1;
                 await this.fetchNotes();
                 this.closeDeleteModal();
             } catch (e) {
